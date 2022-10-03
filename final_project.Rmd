@@ -2,10 +2,14 @@
 title: "R Notebook"
 output: html_notebook
 ---
+
+# Libraries
+
 ```{r}
 library(tidyverse)
 library(janitor)
 ```
+# Reading in Data
 
 ```{r}
 regional <- read_csv("raw_data/regional_domestic_tourism.csv") %>% clean_names()
@@ -16,20 +20,47 @@ location <- read_csv("raw_data/tourism_day_visits_location.csv") %>% clean_names
 transport <- read_csv("raw_data/tourism_day_visits_transport.csv") %>% clean_names()
 ```
 
+# Cleaning to be moved to a separate script
+check all for NAs, clean names
+cut out columns not needed
+ this code for demo:
+ 
+```{r}
+demo <- demo %>% 
+  mutate(demo = case_when(
+    age != "All" ~ age,
+    marital_status != "All" ~ marital_status,
+    gender != "All" ~ gender,
+    employment_status != "All" ~ employment_status,
+    children != "All" ~ children,
+    access_to_car != "All" ~ access_to_car,
+    social_grade != "All" ~ social_grade,
+    TRUE ~ "All"
+  ))
+
+```
+
+
+# Q1
 • What kind of tourism activity generates the highest income for Scotland?
-To answer this lets look at the table activities and summarise the differnet activities in order of expenditure
+To answer this lets look at the table activities and summarise the different activities in order of expenditure
 
 ```{r}
 head(activities)
 
 activities %>% 
-  filter(breakdown_of_domestic_tourism == "Expenditure", tourism_activity != "All", date_code == 2019) %>% 
+  filter(breakdown_of_domestic_tourism == "Expenditure", 
+         tourism_activity != "All", 
+         date_code == 2019) %>% 
   group_by(tourism_activity) %>% 
   summarise(total_value = sum(value)) %>% 
   arrange(desc(total_value)) %>% 
   ggplot(aes(x = reorder(tourism_activity, total_value), y = total_value))+
   geom_col()+
-  coord_flip()
+  coord_flip()+
+  labs(title = "2019 Scotland Tourism Activites by Revenue Generated",
+       y = "Total Expenditure (£millions)",
+       x = "Tourism Activity")
 ```
 
 
@@ -38,13 +69,101 @@ activities %>%
 
 
 • Which kind of activity generates the most visits to sites?
+
+```{r}
+activities %>% 
+  filter(breakdown_of_domestic_tourism == "Visits", 
+         tourism_activity != "All", 
+         date_code == 2019) %>% 
+  group_by(tourism_activity) %>% 
+  summarise(total_value = sum(value)) %>% 
+  arrange(desc(total_value)) %>% 
+  ggplot(aes(x = reorder(tourism_activity, total_value), y = total_value))+
+  geom_col()+
+  coord_flip()+
+  labs(title = "2019 Scotland Tourism Activites by Visits",
+       y = "Total Visits (millions)",
+       x = "Tourism Activity")
+```
+
+
+
 1
 • Is there a particular key demographic of visitors we should be focusing on? Who spends the most?
 Who visits the most?
+
+
+```{r}
+head(demo)
+
+demo %>% 
+  filter(breakdown_of_domestic_tourism == "Expenditure", 
+         date_code == 2019,
+         demo != "All") %>% 
+  arrange(desc(value)) %>% 
+  select(value, demo)
+  
+
+```
+
 • What type of locations receive the most visits? What kinds of locations do people spend the most in?
-• Is there a particular method of travel our visitors arrive by? Some of our locations are remote and not
-easily accessible by public transport, so this would be good information to have.
+
+```{r}
+location %>% 
+  filter(breakdown_of_domestic_tourism == "Visits", 
+         type_of_location_visited != "All areas", 
+         date_code == 2019) %>% 
+  group_by(type_of_location_visited) %>% 
+  summarise(total_value = sum(value)) %>% 
+  arrange(desc(total_value)) %>% 
+  ggplot(aes(x = reorder(type_of_location_visited, total_value), y = total_value))+
+  geom_col()+
+  coord_flip()+
+  labs(title = "2019 Scotland Tourism Locations by Visits",
+       y = "Total Visits (millions)",
+       x = "Tourism Location")
+```
+```{r}
+location %>% 
+  filter(breakdown_of_domestic_tourism == "Expenditure", 
+         type_of_location_visited != "All areas", 
+         date_code == 2019) %>% 
+  group_by(type_of_location_visited) %>% 
+  summarise(total_value = sum(value)) %>% 
+  arrange(desc(total_value)) %>% 
+  ggplot(aes(x = reorder(type_of_location_visited, total_value), y = total_value))+
+  geom_col()+
+  coord_flip()+
+  labs(title = "2019 Scotland Tourism Locations by Expenditure",
+       y = "Total Expenditure (millions)",
+       x = "Tourism Location")
+```
+
+
+• Is there a particular method of travel our visitors arrive by? Some of our locations are remote and not easily accessible by public transport, so this would be good information to have.
+
+
 • When looking at regional tourism, what insights can we gain? Where are our visitors from? How do
 they differ in the money they spend, nights they spend in Scotland, or number of visits they do?
 • What type of accomodation is most popular? Is there a difference by location?
 • How have general tourism rates changed over time?
+
+
+
+
+
+Comments
+
+Better data recording!
+Team of marketers at the green welly doing surveys?
+Data is already summarised epecially the demographic table
+
+Social Grade	Description	% HRP population (UK)
+AB	Higher & intermediate managerial, administrative, professional occupations	22.17
+C1	Supervisory, clerical & junior managerial, administrative, professional occupations	30.84
+C2	Skilled manual occupations	20.94
+DE	Semi-skilled & unskilled manual occupations, Unemployed and lowest grade occupations	26.05
+
+Household Reference Person – DEFINITION (source: ONS)
+
+The concept of a Household Reference Person (HRP) was introduced in the 2001 Census (in common with other government surveys in 2001/2) to replace the traditional concept of the ‘head of the household’.

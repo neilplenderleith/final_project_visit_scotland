@@ -1,0 +1,17 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+library(tidyverse)
+library(janitor)
+```
+
+```{r}
+regional <- read_csv("raw_data/regional_domestic_tourism.csv") %>% clean_names()
+accom <- read_csv("raw_data/scottish_accomodation_occupancy.csv") %>% clean_names()
+activities <- read_csv("raw_data/tourism_day_visits_activities.csv") %>% clean_names()
+demo <- read_csv("raw_data/tourism_day_visits_demographics.csv") %>% clean_names()
+location <- read_csv("raw_data/tourism_day_visits_location.csv") %>% clean_names()
+transport <- read_csv("raw_data/tourism_day_visits_transport.csv") %>% clean_names()
+```

@@ -15,3 +15,36 @@ demo <- read_csv("raw_data/tourism_day_visits_demographics.csv") %>% clean_names
 location <- read_csv("raw_data/tourism_day_visits_location.csv") %>% clean_names()
 transport <- read_csv("raw_data/tourism_day_visits_transport.csv") %>% clean_names()
 ```
+
+• What kind of tourism activity generates the highest income for Scotland?
+To answer this lets look at the table activities and summarise the differnet activities in order of expenditure
+
+```{r}
+head(activities)
+
+activities %>% 
+  filter(breakdown_of_domestic_tourism == "Expenditure", tourism_activity != "All", date_code == 2019) %>% 
+  group_by(tourism_activity) %>% 
+  summarise(total_value = sum(value)) %>% 
+  arrange(desc(total_value)) %>% 
+  ggplot(aes(x = reorder(tourism_activity, total_value), y = total_value))+
+  geom_col()+
+  coord_flip()
+```
+
+
+
+
+
+
+• Which kind of activity generates the most visits to sites?
+1
+• Is there a particular key demographic of visitors we should be focusing on? Who spends the most?
+Who visits the most?
+• What type of locations receive the most visits? What kinds of locations do people spend the most in?
+• Is there a particular method of travel our visitors arrive by? Some of our locations are remote and not
+easily accessible by public transport, so this would be good information to have.
+• When looking at regional tourism, what insights can we gain? Where are our visitors from? How do
+they differ in the money they spend, nights they spend in Scotland, or number of visits they do?
+• What type of accomodation is most popular? Is there a difference by location?
+• How have general tourism rates changed over time?

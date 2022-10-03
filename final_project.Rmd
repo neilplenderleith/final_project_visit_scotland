@@ -23,6 +23,8 @@ transport <- read_csv("raw_data/tourism_day_visits_transport.csv") %>% clean_nam
 # Cleaning to be moved to a separate script
 check all for NAs, clean names
 cut out columns not needed
+check variable types - int, chr etc
+strip out Wales in Region?
  this code for demo:
  
 ```{r}
@@ -34,7 +36,7 @@ demo <- demo %>%
     employment_status != "All" ~ employment_status,
     children != "All" ~ children,
     access_to_car != "All" ~ access_to_car,
-    social_grade != "All" ~ social_grade,
+    social_grade != "All" ~ paste0("Social Grade - " ,social_grade),
     TRUE ~ "All"
   ))
 
@@ -101,10 +103,31 @@ demo %>%
          date_code == 2019,
          demo != "All") %>% 
   arrange(desc(value)) %>% 
-  select(value, demo)
+  select(value, demo) %>% 
+  ggplot(aes(x = reorder(demo, value), y = value))+
+  geom_col()+
+  coord_flip()
   
 
 ```
+
+```{r}
+head(demo)
+
+demo %>% 
+  filter(breakdown_of_domestic_tourism == "Visits", 
+         date_code == 2019,
+         demo != "All") %>% 
+  arrange(desc(value)) %>% 
+  select(value, demo) %>% 
+  ggplot(aes(x = reorder(demo, value), y = value))+
+  geom_col()+
+  coord_flip()
+  
+
+```
+
+
 
 • What type of locations receive the most visits? What kinds of locations do people spend the most in?
 
@@ -116,7 +139,7 @@ location %>%
   group_by(type_of_location_visited) %>% 
   summarise(total_value = sum(value)) %>% 
   arrange(desc(total_value)) %>% 
-  ggplot(aes(x = reorder(type_of_location_visited, total_value), y = total_value))+
+  ggplot(aes()+
   geom_col()+
   coord_flip()+
   labs(title = "2019 Scotland Tourism Locations by Visits",
@@ -137,17 +160,102 @@ location %>%
   labs(title = "2019 Scotland Tourism Locations by Expenditure",
        y = "Total Expenditure (millions)",
        x = "Tourism Location")
+
+location %>% 
+  filter(type_of_location_visited != "All areas") %>% 
+  group_by(type_of_location_visited) %>% 
+  select(c(type_of_location_visited, date_code, value)) %>% 
+  ggplot(aes(x = date_code, y = value))+
+  geom_line(aes(group = interaction(value, type_of_location_visited), colour = type_of_location_visited))+
+  geom_point()
+  
 ```
 
 
 • Is there a particular method of travel our visitors arrive by? Some of our locations are remote and not easily accessible by public transport, so this would be good information to have.
 
+> total owned car = 80 million visits in 2019
+> total not owned car visits (this includes hire cars (should it?)) = 53.7 visits
 
-• When looking at regional tourism, what insights can we gain? Where are our visitors from? How do
-they differ in the money they spend, nights they spend in Scotland, or number of visits they do?
-• What type of accomodation is most popular? Is there a difference by location?
+```{r}
+head(transport)
+
+transport %>% 
+  filter(date_code == 2019,
+         breakdown_of_domestic_tourism == "Visits",
+         method_of_travel != "All") %>% 
+  ggplot(aes(x = reorder(method_of_travel, value), y = value))+
+  geom_col()+
+  coord_flip()+
+  labs(title = "2019 Transport Visits by Transport Type",
+       y = "Visits (millions)",
+       x = "Transport Type")
+  
+transport %>% 
+  filter(method_of_travel == "Car - own/friends/family",
+         date_code == 2019,
+         breakdown_of_domestic_tourism == "Visits")
+
+transport %>% 
+  filter(method_of_travel != "Car - own/friends/family",
+         method_of_travel != "All",
+         date_code == 2019,
+         breakdown_of_domestic_tourism == "Visits") %>% 
+  summarise(total_val = sum(value))
+```
+
+
+
+• When looking at regional tourism, what insights can we gain? Where are our visitors from? How do they differ in the money they spend, nights they spend in Scotland, or number of visits they do?
+
+```{r}
+regional %>% 
+  count(feature_code)
+
+regional %>% 
+  filter(feature_code == "S92000003",
+         units == "Thousand Nights") %>% 
+  ggplot(aes(x = date_code, y = value))+
+  geom_line(aes(colour = region_of_residence, group = region_of_residence))+
+  labs(title = "Regional Tourism by Nights of stay",
+       y = "Nights of Stay (thousands)",
+       x = "\n Date Group")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+regional %>% 
+  filter(feature_code == "S92000003",
+         units == "million pounds (GBP)") %>% 
+  ggplot(aes(x = date_code, y = value))+
+  geom_line(aes(colour = region_of_residence, group = region_of_residence))+
+  labs(title = "Regional Tourism by Spend(million pounds)",
+       y = "Amount Spent (£millions)",
+       x = "\n Date Group")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+regional %>% 
+  filter(feature_code == "S92000003",
+         units == "Thousand Visits") %>% 
+  ggplot(aes(x = date_code, y = value))+
+  geom_line(aes(colour = region_of_residence, group = region_of_residence))+
+  labs(title = "Regional Tourism by Visits",
+       y = "Visits (thousands)",
+       x = "\n Date Group")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+. can say English have slightly fewer visits but longers stays which makes sense. Also spend more - accommodation spend, overnights etc
+
+• What type of accommodation is most popular? Is there a difference by location?
+
+```{r}
+accom %>% 
+  filter(date_code == 2019) %>% 
+  arrange(desc(value))
+```
+
+
 • How have general tourism rates changed over time?
 
+ Is there any way to predict spending and visits for Visit Scotland?
 
 
 
@@ -167,3 +275,9 @@ DE	Semi-skilled & unskilled manual occupations, Unemployed and lowest grade occu
 Household Reference Person – DEFINITION (source: ONS)
 
 The concept of a Household Reference Person (HRP) was introduced in the 2001 Census (in common with other government surveys in 2001/2) to replace the traditional concept of the ‘head of the household’.
+
+Unclear whether the use of "all of great britain" includes N Ireland? Technically GB is just england wales and scotland but it has been used to mean NI as well.
+
+Domestic tourism statistics by region and year. All figures come from the Great Britain Tourism Survey (GBTS) and represent 3-year annual averages due to small sample sizes on regional level.
+
+Data has already been summarised - would have been better to have had the original data

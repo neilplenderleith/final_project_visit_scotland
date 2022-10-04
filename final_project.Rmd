@@ -40,6 +40,21 @@ demo <- demo %>%
     TRUE ~ "All"
   ))
 
+
+# This code for accom:
+accom <- accom %>% 
+  mutate(accom = case_when(
+    weekday_weekend != "All" ~ weekday_weekend,
+    size_of_accommodation != "All" ~ size_of_accommodation,
+    location != "All" ~ location,
+    TRUE ~ "All"
+  ))
+
+# Also for accom take these lines out:
+# as we are going to use room occupancy
+accom <- accom %>% 
+  filter(accommodation_type_and_occupancy != "Guest House/B&B - Bed Occupancy",
+  accommodation_type_and_occupancy != "Hotels - Bed Occupancy")  
 ```
 
 
@@ -64,7 +79,29 @@ activities %>%
        y = "Total Expenditure (£millions)",
        x = "Tourism Activity")
 ```
+```{r}
+activities %>% 
+  filter(breakdown_of_domestic_tourism == "Expenditure", 
+         tourism_activity != "All") %>% 
+  group_by(tourism_activity) %>% 
+  summarise(total_value = sum(value)) %>% 
+  arrange(desc(total_value)) %>% 
+  ggplot(aes(x = reorder(tourism_activity, total_value), y = total_value))+
+  geom_col()+
+  coord_flip()+
+  labs(title = "All Time (2013-2019) Scotland Tourism Activites by Revenue Generated",
+       y = "Total Expenditure (£millions)",
+       x = "Tourism Activity")+
+  theme(plot.caption = element_text(hjust = 0, face= "italic"), #Default is hjust=1
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")
+```
+want a top 6 over time plot
+```{r}
 
+activities %>% 
+  filter
+```
 
 
 
@@ -118,8 +155,6 @@ demo %>%
   filter(breakdown_of_domestic_tourism == "Visits", 
          date_code == 2019,
          demo != "All") %>% 
-  arrange(desc(value)) %>% 
-  select(value, demo) %>% 
   ggplot(aes(x = reorder(demo, value), y = value))+
   geom_col()+
   coord_flip()
@@ -139,7 +174,7 @@ location %>%
   group_by(type_of_location_visited) %>% 
   summarise(total_value = sum(value)) %>% 
   arrange(desc(total_value)) %>% 
-  ggplot(aes()+
+  ggplot(aes(x = reorder(type_of_location_visited, total_value), y = total_value))+
   geom_col()+
   coord_flip()+
   labs(title = "2019 Scotland Tourism Locations by Visits",
@@ -162,13 +197,28 @@ location %>%
        x = "Tourism Location")
 
 location %>% 
-  filter(type_of_location_visited != "All areas") %>% 
+  filter(type_of_location_visited != "All areas", 
+         breakdown_of_domestic_tourism == "Expenditure") %>% 
   group_by(type_of_location_visited) %>% 
   select(c(type_of_location_visited, date_code, value)) %>% 
   ggplot(aes(x = date_code, y = value))+
-  geom_line(aes(group = interaction(value, type_of_location_visited), colour = type_of_location_visited))+
-  geom_point()
+  geom_line(aes(colour = type_of_location_visited))+
+  geom_point()+
+  labs(title = "2019 Scotland Tourism Locations by Expenditure",
+       y = "Total Expenditure (millions)",
+       x = "Tourism Location")
   
+location %>% 
+  filter(type_of_location_visited != "All areas", 
+         breakdown_of_domestic_tourism == "Visits") %>% 
+  group_by(type_of_location_visited) %>% 
+  select(c(type_of_location_visited, date_code, value)) %>% 
+  ggplot(aes(x = date_code, y = value))+
+  geom_line(aes(colour = type_of_location_visited))+
+  geom_point()+
+  labs(title = "2019 Scotland Tourism Locations by Visits",
+       y = "Total Visits (millions)",
+       x = "Tourism Location")
 ```
 
 
@@ -248,8 +298,48 @@ regional %>%
 
 ```{r}
 accom %>% 
-  filter(date_code == 2019) %>% 
+  count(accommodation_type_and_occupancy)
+
+accom %>% 
+  filter(date_code == 2019, accom != "All") %>% 
   arrange(desc(value))
+
+accom %>% 
+  filter(accom != "All") %>% 
+  group_by(accommodation_type_and_occupancy) %>% 
+  summarise(mean_occupancy = mean(value)) %>% 
+  ggplot(aes(x = reorder(accommodation_type_and_occupancy, mean_occupancy), y = mean_occupancy))+
+  geom_col()+
+  coord_flip()
+```
+```{r}
+accom %>% 
+  filter(accom != "All", location != "All") %>% 
+  group_by(accommodation_type_and_occupancy, location) %>% 
+  summarise(mean_occupancy = mean(value)) %>% 
+  ggplot(aes(x = reorder(accommodation_type_and_occupancy, mean_occupancy), y = mean_occupancy))+
+  geom_col()+
+  coord_flip()+
+  facet_wrap( ~ location)
+```
+```{r}
+accom %>% 
+  filter(accom != "All", size_of_accommodation != "All") %>% 
+  group_by(accommodation_type_and_occupancy, size_of_accommodation) %>% 
+  summarise(mean_occupancy = mean(value)) %>% 
+  ggplot(aes(x = reorder(accommodation_type_and_occupancy, mean_occupancy), y = mean_occupancy))+
+  geom_col(fill = "#700e57")+
+  coord_flip()+
+  facet_wrap( ~ size_of_accommodation)
+```
+
+```{r}
+accom %>% 
+  filter(accom == "All") %>% 
+  ggplot(aes(x = date_code, y = value, colour = accommodation_type_and_occupancy))+
+  geom_line()+
+  geom_point()+
+  scale_x_discrete(limits = (accom$date_code))
 ```
 
 
@@ -281,3 +371,5 @@ Unclear whether the use of "all of great britain" includes N Ireland? Technicall
 Domestic tourism statistics by region and year. All figures come from the Great Britain Tourism Survey (GBTS) and represent 3-year annual averages due to small sample sizes on regional level.
 
 Data has already been summarised - would have been better to have had the original data
+
+Used room occupancy rather than bed occupancy as it relates better to the other factors we are comparing it to eg a tent pitch.

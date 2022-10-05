@@ -98,9 +98,37 @@ activities %>%
 ```
 want a top 6 over time plot
 ```{r}
+# lets find the top 6 activities
+top_6_activities <- activities%>% 
+  filter(tourism_activity != "All",
+         breakdown_of_domestic_tourism == "Visits") %>% 
+  slice_max(order_by = value, n = 41, with_ties = FALSE) %>% 
+  pull(tourism_activity) %>% 
+  unique()
+
 
 activities %>% 
-  filter
+  filter(tourism_activity %in% top_6_activities,
+         breakdown_of_domestic_tourism == "Visits") %>% 
+  ggplot(aes(x = date_code, y = value, colour = tourism_activity))+
+  geom_line()+
+  scale_x_discrete(limits = (activities$date_code))+
+  geom_point()+
+  labs(title = "Top 6 Tourism Activity Visits over time",
+       x = "\n Year",
+       y = "Visits (millions)\n ")
+
+activities %>% 
+  filter(tourism_activity %in% top_6_activities,
+         breakdown_of_domestic_tourism == "Expenditure") %>% 
+  ggplot(aes(x = date_code, y = value, colour = tourism_activity))+
+  geom_line()+
+  scale_x_discrete(limits = (activities$date_code))+
+  geom_point()+
+  labs(title = "Top 6 Tourism Activity Expendiure over time",
+       x = "\n Year",
+       y = "Expenditure (£millions)\n ")
+  
 ```
 
 
@@ -143,7 +171,10 @@ demo %>%
   select(value, demo) %>% 
   ggplot(aes(x = reorder(demo, value), y = value))+
   geom_col()+
-  coord_flip()
+  coord_flip()+
+  labs(title = "2019 Tourist Expenditure Breakdown by Demographics",
+       x = "Demographic",
+       y = "Expenditure (£millions)")
   
 
 ```
@@ -157,7 +188,10 @@ demo %>%
          demo != "All") %>% 
   ggplot(aes(x = reorder(demo, value), y = value))+
   geom_col()+
-  coord_flip()
+  coord_flip()+
+  labs(title = "2019 Tourist Visits Breakdown by Demographics",
+       x = "Demographic",
+       y = "Visits (millions)")
   
 
 ```
@@ -218,7 +252,8 @@ location %>%
   geom_point()+
   labs(title = "2019 Scotland Tourism Locations by Visits",
        y = "Total Visits (millions)",
-       x = "Tourism Location")
+       x = "Tourism Location")+
+  scale_x_discrete(limits = (location$date_code))
 ```
 
 

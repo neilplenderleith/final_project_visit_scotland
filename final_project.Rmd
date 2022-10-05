@@ -9,52 +9,17 @@ output: html_notebook
 library(tidyverse)
 library(janitor)
 ```
+
 # Reading in Data
 
 ```{r}
-regional <- read_csv("raw_data/regional_domestic_tourism.csv") %>% clean_names()
-accom <- read_csv("raw_data/scottish_accomodation_occupancy.csv") %>% clean_names()
-activities <- read_csv("raw_data/tourism_day_visits_activities.csv") %>% clean_names()
-demo <- read_csv("raw_data/tourism_day_visits_demographics.csv") %>% clean_names()
-location <- read_csv("raw_data/tourism_day_visits_location.csv") %>% clean_names()
-transport <- read_csv("raw_data/tourism_day_visits_transport.csv") %>% clean_names()
-```
-
-# Cleaning to be moved to a separate script
-check all for NAs, clean names
-cut out columns not needed
-check variable types - int, chr etc
-strip out Wales in Region?
- this code for demo:
- 
-```{r}
-demo <- demo %>% 
-  mutate(demo = case_when(
-    age != "All" ~ age,
-    marital_status != "All" ~ marital_status,
-    gender != "All" ~ gender,
-    employment_status != "All" ~ employment_status,
-    children != "All" ~ children,
-    access_to_car != "All" ~ access_to_car,
-    social_grade != "All" ~ paste0("Social Grade - " ,social_grade),
-    TRUE ~ "All"
-  ))
-
-
-# This code for accom:
-accom <- accom %>% 
-  mutate(accom = case_when(
-    weekday_weekend != "All" ~ weekday_weekend,
-    size_of_accommodation != "All" ~ size_of_accommodation,
-    location != "All" ~ location,
-    TRUE ~ "All"
-  ))
-
-# Also for accom take these lines out:
-# as we are going to use room occupancy
-accom <- accom %>% 
-  filter(accommodation_type_and_occupancy != "Guest House/B&B - Bed Occupancy",
-  accommodation_type_and_occupancy != "Hotels - Bed Occupancy")  
+# read in our cleaned data
+regional <- read_csv("clean_data/regional_domestic_tourism.csv") 
+accom <- read_csv("clean_data/scottish_accomodation_occupancy.csv") 
+activities <- read_csv("clean_data/tourism_day_visits_activities.csv") 
+demo <- read_csv("clean_data/tourism_day_visits_demographics.csv") 
+location <- read_csv("clean_data/tourism_day_visits_location.csv") 
+transport <- read_csv("clean_data/tourism_day_visits_transport.csv") 
 ```
 
 
@@ -77,7 +42,10 @@ activities %>%
   coord_flip()+
   labs(title = "2019 Scotland Tourism Activites by Revenue Generated",
        y = "Total Expenditure (£millions)",
-       x = "Tourism Activity")
+       x = "Tourism Activity")+
+    theme(plot.caption = element_text(hjust = 0, face= "italic"), #Default is hjust=1
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")
 ```
 ```{r}
 activities %>% 
@@ -106,18 +74,6 @@ top_6_activities <- activities%>%
   pull(tourism_activity) %>% 
   unique()
 
-
-activities %>% 
-  filter(tourism_activity %in% top_6_activities,
-         breakdown_of_domestic_tourism == "Visits") %>% 
-  ggplot(aes(x = date_code, y = value, colour = tourism_activity))+
-  geom_line()+
-  scale_x_discrete(limits = (activities$date_code))+
-  geom_point()+
-  labs(title = "Top 6 Tourism Activity Visits over time",
-       x = "\n Year",
-       y = "Visits (millions)\n ")
-
 activities %>% 
   filter(tourism_activity %in% top_6_activities,
          breakdown_of_domestic_tourism == "Expenditure") %>% 
@@ -130,7 +86,7 @@ activities %>%
        y = "Expenditure (£millions)\n ")
   
 ```
-
+> visits and activities are generally going up over this period
 
 
 
@@ -151,6 +107,20 @@ activities %>%
   labs(title = "2019 Scotland Tourism Activites by Visits",
        y = "Total Visits (millions)",
        x = "Tourism Activity")
+```
+# Visits over time
+```{r}
+
+activities %>% 
+  filter(tourism_activity %in% top_6_activities,
+         breakdown_of_domestic_tourism == "Visits") %>% 
+  ggplot(aes(x = date_code, y = value, colour = tourism_activity))+
+  geom_line()+
+  scale_x_discrete(limits = (activities$date_code))+
+  geom_point()+
+  labs(title = "Top 6 Tourism Activity Visits over time",
+       x = "\n Year",
+       y = "Visits (millions)\n ")
 ```
 
 
@@ -178,6 +148,8 @@ demo %>%
   
 
 ```
+> In the expenditure certain standouts include the AB social group taking a jump from the visits graph, this stands to reason with more disposable income. Students again last.
+
 
 ```{r}
 head(demo)
@@ -195,7 +167,7 @@ demo %>%
   
 
 ```
-
+> Primary Market seems to be people with car access, with no kids, married and employed either full or part time. There is a big gulf between with kids and no kids. Again this data has been pre summarised so its difficult to drill down further into this but we can draw these simple conclusions
 
 
 • What type of locations receive the most visits? What kinds of locations do people spend the most in?
@@ -210,7 +182,7 @@ location %>%
   arrange(desc(total_value)) %>% 
   ggplot(aes(x = reorder(type_of_location_visited, total_value), y = total_value))+
   geom_col()+
-  coord_flip()+
+  #coord_flip()+
   labs(title = "2019 Scotland Tourism Locations by Visits",
        y = "Total Visits (millions)",
        x = "Tourism Location")
@@ -255,7 +227,7 @@ location %>%
        x = "Tourism Location")+
   scale_x_discrete(limits = (location$date_code))
 ```
-
+> Cities and large towns are by far the most popular destinations. Possibly this is skewed as the data includes a lot of going out for meals?
 
 • Is there a particular method of travel our visitors arrive by? Some of our locations are remote and not easily accessible by public transport, so this would be good information to have.
 
@@ -273,22 +245,77 @@ transport %>%
   geom_col()+
   coord_flip()+
   labs(title = "2019 Transport Visits by Transport Type",
+       subtitle = "67% of all visits by car",
        y = "Visits (millions)",
        x = "Transport Type")
+
+transport %>% 
+  filter(date_code == 2019,
+         breakdown_of_domestic_tourism == "Expenditure",
+         method_of_travel != "All") %>% 
+  ggplot(aes(x = reorder(method_of_travel, value), y = value))+
+  geom_col()+
+  coord_flip()+
+  labs(title = "2019 Transport Expendiure by Transport Type",
+       subtitle = "63% of all expenditure by car",
+       y = "Expendiure (£millions)",
+       x = "Transport Type")
   
-transport %>% 
-  filter(method_of_travel == "Car - own/friends/family",
-         date_code == 2019,
-         breakdown_of_domestic_tourism == "Visits")
-
-transport %>% 
-  filter(method_of_travel != "Car - own/friends/family",
-         method_of_travel != "All",
-         date_code == 2019,
-         breakdown_of_domestic_tourism == "Visits") %>% 
-  summarise(total_val = sum(value))
+# transport %>% 
+#   filter(method_of_travel == "Car - own/friends/family",
+#          date_code == 2019,
+#          breakdown_of_domestic_tourism == "Visits")
+# 
+# transport %>% 
+#   filter(method_of_travel != "Car - own/friends/family",
+#          method_of_travel != "All",
+#          date_code == 2019,
+#          breakdown_of_domestic_tourism == "Visits") %>% 
+#   summarise(total_val = sum(value))
+# 
+# transport %>% 
+#   filter(method_of_travel == "Car - own/friends/family",
+#          date_code == 2019,
+#          breakdown_of_domestic_tourism == "Expenditure")
+# 
+# transport %>% 
+#   filter(method_of_travel != "Car - own/friends/family",
+#          method_of_travel != "All",
+#          date_code == 2019,
+#          breakdown_of_domestic_tourism == "Expenditure") %>% 
+#   summarise(total_val = sum(value))
 ```
+Transport change over time?
 
+```{r}
+transport %>% 
+  filter(breakdown_of_domestic_tourism == "Visits", 
+         method_of_travel != "All") %>% 
+  ggplot(aes(x = date_code, y = value, colour = method_of_travel))+
+  geom_line()+
+  geom_point()
+
+transport %>% 
+  filter(breakdown_of_domestic_tourism == "Expenditure", 
+         method_of_travel != "All") %>% 
+  ggplot(aes(x = date_code, y = value, colour = method_of_travel))+
+  geom_line()+
+  geom_point()
+
+# lets put everything except car into one category not car!
+transport %>% 
+  filter(method_of_travel != "All") %>% 
+  mutate(method_of_travel = case_when(
+    method_of_travel != "Car - own/friends/family" ~ "Not Car",
+    TRUE ~ "Car"
+  )) %>%
+  group_by(date_code, method_of_travel) %>% 
+  summarise(total_value = sum(value)) %>% 
+  ggplot(aes(x = date_code, y = total_value, colour = method_of_travel))+
+  geom_line()+
+  geom_point()
+```
+> Incredible disparity here. Almost all goes through cars!
 
 
 • When looking at regional tourism, what insights can we gain? Where are our visitors from? How do they differ in the money they spend, nights they spend in Scotland, or number of visits they do?
@@ -327,7 +354,7 @@ regional %>%
        x = "\n Date Group")+
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
-. can say English have slightly fewer visits but longers stays which makes sense. Also spend more - accommodation spend, overnights etc
+> can say English have slightly fewer visits but longers stays which makes sense. Also spend more - accommodation spend, overnights etc
 
 • What type of accommodation is most popular? Is there a difference by location?
 
@@ -345,7 +372,9 @@ accom %>%
   summarise(mean_occupancy = mean(value)) %>% 
   ggplot(aes(x = reorder(accommodation_type_and_occupancy, mean_occupancy), y = mean_occupancy))+
   geom_col()+
-  coord_flip()
+  coord_flip()+
+  labs(title = "Accomodation type vs Mean Occupancy",
+       )
 ```
 ```{r}
 accom %>% 
@@ -374,7 +403,10 @@ accom %>%
   ggplot(aes(x = date_code, y = value, colour = accommodation_type_and_occupancy))+
   geom_line()+
   geom_point()+
-  scale_x_discrete(limits = (accom$date_code))
+  scale_x_discrete(limits = (accom$date_code))+
+  labs(title = "Accomodation Type by Year and Occupancy %",
+       x = "Year",
+       y = "Percentage Occupancy")
 ```
 
 

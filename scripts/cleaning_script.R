@@ -17,7 +17,7 @@ activities <- read_csv("raw_data/tourism_day_visits_activities.csv") %>% clean_n
 demo <- read_csv("raw_data/tourism_day_visits_demographics.csv") %>% clean_names()
 location <- read_csv("raw_data/tourism_day_visits_location.csv") %>% clean_names()
 transport <- read_csv("raw_data/tourism_day_visits_transport.csv") %>% clean_names()
-
+int_data <- readxl::read_xlsx("raw_data/international_2019.xlsx") %>% clean_names()
 
 # regional cleaning -------------------------------------------------------
 
@@ -103,6 +103,10 @@ transport <- transport %>%
   # we can lose these useless columns
   select(-c(measurement, feature_code))
 
+# international data cleaning ---------------------------------------------
+
+int_data <- int_data %>% 
+  mutate(across(2:7, ~ as.factor(.x)))
 
 # write clean data --------------------------------------------------------
 
@@ -112,3 +116,4 @@ activities %>% write_csv("clean_data/tourism_day_visits_activities.csv")
 demo %>%  write_csv("clean_data/tourism_day_visits_demographics.csv") 
 location %>%  write_csv("clean_data/tourism_day_visits_location.csv")
 transport %>%  write_csv("clean_data/tourism_day_visits_transport.csv") 
+int_data %>% write_csv("clean_data/int_data")

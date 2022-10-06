@@ -356,6 +356,38 @@ regional %>%
 ```
 > can say English have slightly fewer visits but longers stays which makes sense. Also spend more - accommodation spend, overnights etc
 
+```{r}
+head(regional)
+```
+```{r}
+regional %>% 
+  filter(units == "Thousand Visits", feature_code != "S92000003") %>% 
+  group_by(local_authority) %>% 
+  summarise(total_visits = sum(value)) %>% 
+  ggplot(aes(x = reorder(local_authority,total_visits), y = total_visits))+
+  geom_col()+
+  coord_flip()
+
+regional %>% 
+  filter(units == "Thousand Nights", feature_code != "S92000003") %>% 
+  group_by(local_authority) %>% 
+  summarise(total_visits = sum(value)) %>% 
+  ggplot(aes(x = reorder(local_authority,total_visits), y = total_visits))+
+  geom_col()+
+  coord_flip()
+
+regional %>% 
+  filter(units == "million pounds (GBP)", feature_code != "S92000003") %>% 
+  group_by(local_authority) %>% 
+  summarise(total_visits = sum(value)) %>% 
+  ggplot(aes(x = reorder(local_authority,total_visits), y = total_visits))+
+  geom_col()+
+  coord_flip()
+```
+> edinburgh glasgow and highland the big three. But highland overtakes on nights stayed suggesting cities more popular for shorter breaks or as part of a travel holiday.
+> WOuldnt be opening a b&B in east ren
+
+
 • What type of accommodation is most popular? Is there a difference by location?
 
 ```{r}

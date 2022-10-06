@@ -1,34 +1,33 @@
-Year,Official Name Local authority district,Type
-,,
-1,S12000023,Orkney Islands
-2,S12000038,Renfrewshire
-3,S12000017,Highland
-4,S12000049,Glasgow City
-5,S12000039,West Dunbartonshire
-6,S12000018,Inverclyde
-7,S12000036,City of Edinburgh
-8,S12000033,Aberdeen City
-9,S12000042,Dundee City
-10,S12000020,Moray
-11,S12000040,West Lothian
-12,S12000006,Dumfries and Galloway
-13,S12000008,East Ayrshire
-14,S12000047,Fife
-15,S12000011,East Renfrewshire
-16,S12000041,Angus
-17,S12000048,Perth and Kinross
-18,S12000028,South Ayrshire
-19,S12000030,Stirling
-20,S12000050,North Lanarkshire
-21,S12000019,Midlothian
-22,S12000026,Scottish Borders
-23,S12000035,Argyll and Bute
-24,S12000013,Na h-Eileanan Siar
-25,S12000014,Falkirk
-26,S12000010,East Lothian
-27,S12000029,South Lanarkshire
-28,S12000021,North Ayrshire
-29,S12000045,East Dunbartonshire
-30,S12000005,Clackmannanshire
-31,S12000027,Shetland Islands
-32,S12000034,Aberdeenshire
+local_authority_code,local_authority
+S12000023,Orkney Islands
+S12000038,Renfrewshire
+S12000017,Highland
+S12000049,Glasgow City
+S12000039,West Dunbartonshire
+S12000018,Inverclyde
+S12000036,City of Edinburgh
+S12000033,Aberdeen City
+S12000042,Dundee City
+S12000020,Moray
+S12000040,West Lothian
+S12000006,Dumfries and Galloway
+S12000008,East Ayrshire
+S12000047,Fife
+S12000011,East Renfrewshire
+S12000041,Angus
+S12000048,Perth and Kinross
+S12000028,South Ayrshire
+S12000030,Stirling
+S12000050,North Lanarkshire
+S12000019,Midlothian
+S12000026,Scottish Borders
+S12000035,Argyll and Bute
+S12000013,Na h-Eileanan Siar
+S12000014,Falkirk
+S12000010,East Lothian
+S12000029,South Lanarkshire
+S12000021,North Ayrshire
+S12000045,East Dunbartonshire
+S12000005,Clackmannanshire
+S12000027,Shetland Islands
+S12000034,Aberdeenshire

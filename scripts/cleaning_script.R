@@ -18,6 +18,7 @@ demo <- read_csv("raw_data/tourism_day_visits_demographics.csv") %>% clean_names
 location <- read_csv("raw_data/tourism_day_visits_location.csv") %>% clean_names()
 transport <- read_csv("raw_data/tourism_day_visits_transport.csv") %>% clean_names()
 int_data <- readxl::read_xlsx("raw_data/international_2019.xlsx") %>% clean_names()
+region_codes <- read_csv("raw_data/scotland_codes - Sheet1.csv")
 
 # regional cleaning -------------------------------------------------------
 
@@ -27,7 +28,9 @@ skim(regional) # no missing data at all
 
 # we can lose measurement column, otherwise table can stay
 regional <- regional %>% 
-  select(-measurement)
+  select(-measurement) %>% 
+  # join with the region_codes table to get the names of the local authority
+  left_join(region_codes, by = c("feature_code" = "local_authority_code"))
 
 
 # accom cleaning ----------------------------------------------------------

@@ -20,10 +20,11 @@ activities <- read_csv("clean_data/tourism_day_visits_activities.csv")
 demo <- read_csv("clean_data/tourism_day_visits_demographics.csv") 
 location <- read_csv("clean_data/tourism_day_visits_location.csv") 
 transport <- read_csv("clean_data/tourism_day_visits_transport.csv") 
+inter <- read_csv("clean_data/int_data")
 ```
 
 
-# Q1
+# Q1 - Activities
 • What kind of tourism activity generates the highest income for Scotland?
 To answer this lets look at the table activities and summarise the different activities in order of expenditure
 
@@ -91,7 +92,8 @@ activities %>%
 
 
 
-• Which kind of activity generates the most visits to sites?
+# Q2 Activity - Visits 
+Which kind of activity generates the most visits to sites?
 
 ```{r}
 activities %>% 
@@ -125,8 +127,9 @@ activities %>%
 
 
 
-1
-• Is there a particular key demographic of visitors we should be focusing on? Who spends the most?
+
+#Q3 Demographics
+Is there a particular key demographic of visitors we should be focusing on? Who spends the most?
 Who visits the most?
 
 
@@ -169,7 +172,7 @@ demo %>%
 ```
 > Primary Market seems to be people with car access, with no kids, married and employed either full or part time. There is a big gulf between with kids and no kids. Again this data has been pre summarised so its difficult to drill down further into this but we can draw these simple conclusions
 
-
+# Q4 Location
 • What type of locations receive the most visits? What kinds of locations do people spend the most in?
 
 ```{r}
@@ -229,7 +232,8 @@ location %>%
 ```
 > Cities and large towns are by far the most popular destinations. Possibly this is skewed as the data includes a lot of going out for meals?
 
-• Is there a particular method of travel our visitors arrive by? Some of our locations are remote and not easily accessible by public transport, so this would be good information to have.
+# Q5 Transport
+Is there a particular method of travel our visitors arrive by? Some of our locations are remote and not easily accessible by public transport, so this would be good information to have.
 
 > total owned car = 80 million visits in 2019
 > total not owned car visits (this includes hire cars (should it?)) = 53.7 visits
@@ -318,7 +322,8 @@ transport %>%
 > Incredible disparity here. Almost all goes through cars!
 
 
-• When looking at regional tourism, what insights can we gain? Where are our visitors from? How do they differ in the money they spend, nights they spend in Scotland, or number of visits they do?
+# Q6 Regional
+When looking at regional tourism, what insights can we gain? Where are our visitors from? How do they differ in the money they spend, nights they spend in Scotland, or number of visits they do?
 
 ```{r}
 regional %>% 
@@ -388,7 +393,8 @@ regional %>%
 > WOuldnt be opening a b&B in east ren
 
 
-• What type of accommodation is most popular? Is there a difference by location?
+#Q7 Accomodation Type
+What type of accommodation is most popular? Is there a difference by location?
 
 ```{r}
 accom %>% 
@@ -443,13 +449,92 @@ accom %>%
 
 
 • How have general tourism rates changed over time?
+> Feel like this has been answered on a question by question basis. Do a summary graph here of expenditure and Visits?
 
- Is there any way to predict spending and visits for Visit Scotland?
+# International
+
+```{r}
+# get a top 6 visits
+top_6_visitors <- inter %>% 
+  group_by(country) %>% 
+  summarise(total_visits = (sum(visits_000s)*1000)) %>% 
+  slice_max(total_visits, n=6) %>% 
+  pull(country)
+
+inter %>% 
+  filter(country %in% top_6_visitors) %>% 
+  group_by(country, year) %>% 
+  summarise(total_visits = (sum(visits_000s)*1000)) %>% 
+  ggplot(aes(x= year, y = total_visits, colour = country))+
+  geom_line()+
+  geom_point()
+
+inter %>% 
+  filter(country %in% top_6_visitors) %>% 
+  group_by(country) %>% 
+  summarise(total_visits = (sum(visits_000s)*1000)) %>% 
+  ggplot(aes(x = reorder(country,total_visits), y = total_visits))+
+  geom_col()+
+  coord_flip()
+```
+
+```{r}
+
+# get a top 6
+top_6_spend <- inter %>% 
+  group_by(country) %>% 
+  summarise(total_spend = sum(spend_m)) %>% 
+  slice_max(total_spend, n=6) %>% 
+  pull(country)
+
+inter %>% 
+  filter(country %in% top_6_spend) %>% 
+  group_by(country, year) %>% 
+  summarise(total_spend = sum(spend_m)) %>% 
+  ggplot(aes(x= year, y = total_spend, colour = country))+
+  geom_line()+
+  geom_point()
+
+inter %>% 
+  filter(country %in% top_6_spend) %>% 
+  group_by(country) %>% 
+  summarise(total_spend = sum(spend_m)) %>% 
+  ggplot(aes(x = reorder(country,total_spend), y = total_spend))+
+  geom_col()+
+  coord_flip()
+```
+
+```{r}
+# get a top 6
+top_6_nights <- inter %>% 
+  group_by(country) %>% 
+  summarise(total_nights = sum(nights_000s)) %>% 
+  slice_max(total_nights, n=6) %>% 
+  pull(country)
+
+inter %>% 
+  filter(country %in% top_6_nights) %>% 
+  group_by(country, year) %>% 
+  summarise(total_nights = (sum(nights_000s)*1000)) %>% 
+  ggplot(aes(x= year, y = total_nights, colour = country))+
+  geom_line()+
+  geom_point()
+
+inter %>% 
+  filter(country %in% top_6_nights) %>% 
+  group_by(country) %>% 
+  summarise(total_nights = (sum(nights_000s)*1000)) %>% 
+  ggplot(aes(x = reorder(country,total_nights), y = total_nights))+
+  geom_col()+
+  coord_flip()
+```
 
 
 
 
-Comments
+is there any way to predict spending and visits for Visit Scotland?
+See python models
+#  Comments
 
 Better data recording!
 Team of marketers at the green welly doing surveys?

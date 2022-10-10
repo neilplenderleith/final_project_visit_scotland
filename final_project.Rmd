@@ -41,12 +41,15 @@ activities %>%
   ggplot(aes(x = reorder(tourism_activity, total_value), y = total_value))+
   geom_col()+
   coord_flip()+
+  theme_minimal()+
   labs(title = "2019 Scotland Tourism Activites by Revenue Generated",
        y = "Total Expenditure (£millions)",
        x = "Tourism Activity")+
-    theme(plot.caption = element_text(hjust = 0, face= "italic"), #Default is hjust=1
+  theme(plot.caption = element_text(hjust = 0, face= "italic"), 
         plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
         plot.caption.position =  "plot")
+  
+
 ```
 ```{r}
 activities %>% 
@@ -125,7 +128,7 @@ activities %>%
        y = "Visits (millions)\n ")
 ```
 
-
+> Visits on all but nights out at bars are going up over time so the increase expensiture we saw cant all be associated with inflation.
 
 
 #Q3 Demographics
@@ -260,7 +263,7 @@ transport %>%
   ggplot(aes(x = reorder(method_of_travel, value), y = value))+
   geom_col()+
   coord_flip()+
-  labs(title = "2019 Transport Expendiure by Transport Type",
+  labs(title = "2019 Transport Expenditure by Transport Type",
        subtitle = "63% of all expenditure by car",
        y = "Expendiure (£millions)",
        x = "Transport Type")
@@ -432,7 +435,8 @@ accom %>%
   ggplot(aes(x = reorder(accommodation_type_and_occupancy, mean_occupancy), y = mean_occupancy))+
   geom_col(fill = "#700e57")+
   coord_flip()+
-  facet_wrap( ~ size_of_accommodation)
+  facet_wrap( ~ size_of_accommodation)+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=3))
 ```
 
 ```{r}
@@ -444,7 +448,11 @@ accom %>%
   scale_x_discrete(limits = (accom$date_code))+
   labs(title = "Accomodation Type by Year and Occupancy %",
        x = "Year",
-       y = "Percentage Occupancy")
+       y = "Percentage Occupancy")+
+  theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3))+
+  labs(color='Accomodation Type') 
 ```
 
 

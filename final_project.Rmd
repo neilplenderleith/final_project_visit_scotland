@@ -286,7 +286,8 @@ location %>%
   geom_point()+
   labs(title = "2019 Scotland Tourism Locations by Expenditure",
        y = "Total Expenditure (millions)",
-       x = "Year")+
+       x = "Year",
+       color='Location Type')+
   scale_x_discrete(limits = (location$date_code))+
   theme_minimal()+
   theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
@@ -305,7 +306,8 @@ location %>%
   geom_point()+
   labs(title = "2019 Scotland Tourism Locations by Visits",
        y = "Total Visits (millions)",
-       x = "Year")+
+       x = "Year",
+       color='Location Type')+
   scale_x_discrete(limits = (location$date_code))+
   theme_minimal()+
   theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
@@ -418,7 +420,18 @@ transport %>%
   summarise(total_value = sum(value)) %>% 
   ggplot(aes(x = date_code, y = total_value, colour = method_of_travel))+
   geom_line()+
-  geom_point()
+  geom_point()+
+  scale_x_discrete(limits = (location$date_code))+
+  labs(title = "Method of Travel over Time",
+       x = "Year",
+       y = "Number of Visits (millions)",
+       color = "Method of Travel")+
+    theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")
 
 transport %>% 
   filter(breakdown_of_domestic_tourism == "Expenditure", 
@@ -457,8 +470,16 @@ regional %>%
   geom_line(aes(colour = region_of_residence, group = region_of_residence))+
   labs(title = "Regional Tourism by Nights of stay",
        y = "Nights of Stay (thousands)",
-       x = "\n Date Group")+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+       x = "\n Years",
+       color = "Region of Origin")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+      theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot",
+        axis.text.x = element_text(angle = 45, hjust=1))
 
 regional %>% 
   filter(feature_code == "S92000003",
@@ -467,8 +488,16 @@ regional %>%
   geom_line(aes(colour = region_of_residence, group = region_of_residence))+
   labs(title = "Regional Tourism by Spend(million pounds)",
        y = "Amount Spent (£millions)",
-       x = "\n Date Group")+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+       x = "\n Years",
+       color = "Region of Origin")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+      theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot",
+        axis.text.x = element_text(angle = 45, hjust=1))
 
 regional %>% 
   filter(feature_code == "S92000003",
@@ -477,8 +506,16 @@ regional %>%
   geom_line(aes(colour = region_of_residence, group = region_of_residence))+
   labs(title = "Regional Tourism by Visits",
        y = "Visits (thousands)",
-       x = "\n Date Group")+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+       x = "\n Years",
+       color = "Region of Origin")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+      theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot",
+        axis.text.x = element_text(angle = 45, hjust=1))
 ```
 > can say English have slightly fewer visits but longers stays which makes sense. Also spend more - accommodation spend, overnights etc
 
@@ -491,24 +528,51 @@ regional %>%
   group_by(local_authority) %>% 
   summarise(total_visits = sum(value)) %>% 
   ggplot(aes(x = reorder(local_authority,total_visits), y = total_visits))+
-  geom_col()+
-  coord_flip()
+  geom_col(fill = "#700e57")+
+  coord_flip()+
+    theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")+
+  labs(title = "Regional Tourism Visit Counts",
+       y = "Total Visits (thousands) ",
+       x = "Scottish Region")
 
 regional %>% 
   filter(units == "Thousand Nights", feature_code != "S92000003") %>% 
   group_by(local_authority) %>% 
   summarise(total_visits = sum(value)) %>% 
   ggplot(aes(x = reorder(local_authority,total_visits), y = total_visits))+
-  geom_col()+
-  coord_flip()
+  geom_col(fill = "#700e57")+
+  coord_flip()+
+    theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")+
+  labs(title = "Regional Tourism Nights Stayed",
+       y = "Total Nights Stayed (thousands) ",
+       x = "Scottish Region")
 
 regional %>% 
   filter(units == "million pounds (GBP)", feature_code != "S92000003") %>% 
   group_by(local_authority) %>% 
   summarise(total_visits = sum(value)) %>% 
   ggplot(aes(x = reorder(local_authority,total_visits), y = total_visits))+
-  geom_col()+
-  coord_flip()
+  geom_col(fill = "#700e57")+
+  coord_flip()+
+  theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")+
+  labs(title = "Regional Tourism Expenditure Counts",
+       y = "Total Expenditure (£millions) ",
+       x = "Scottish Region")
 ```
 > edinburgh glasgow and highland the big three. But highland overtakes on nights stayed suggesting cities more popular for shorter breaks or as part of a travel holiday.
 > WOuldnt be opening a b&B in east ren

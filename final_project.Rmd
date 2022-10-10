@@ -39,13 +39,19 @@ activities %>%
   summarise(total_value = sum(value)) %>% 
   arrange(desc(total_value)) %>% 
   ggplot(aes(x = reorder(tourism_activity, total_value), y = total_value))+
-  geom_col()+
+  geom_col(fill = "#700e57")+
   coord_flip()+
   theme_minimal()+
   labs(title = "2019 Scotland Tourism Activites by Revenue Generated",
        y = "Total Expenditure (£millions)",
        x = "Tourism Activity")+
   theme(plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")+
+  theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
         plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
         plot.caption.position =  "plot")
   
@@ -59,14 +65,22 @@ activities %>%
   summarise(total_value = sum(value)) %>% 
   arrange(desc(total_value)) %>% 
   ggplot(aes(x = reorder(tourism_activity, total_value), y = total_value))+
-  geom_col()+
+  geom_col(fill = "#700e57")+
   coord_flip()+
+  theme_minimal()+
   labs(title = "All Time (2013-2019) Scotland Tourism Activites by Revenue Generated",
        y = "Total Expenditure (£millions)",
        x = "Tourism Activity")+
-  theme(plot.caption = element_text(hjust = 0, face= "italic"), #Default is hjust=1
+  theme(plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")+
+  theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
         plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
         plot.caption.position =  "plot")
+  
 ```
 want a top 6 over time plot
 ```{r}
@@ -87,7 +101,18 @@ activities %>%
   geom_point()+
   labs(title = "Top 6 Tourism Activity Expendiure over time",
        x = "\n Year",
-       y = "Expenditure (£millions)\n ")
+       y = "Expenditure (£millions)\n ",
+       color='Tourism Activity')+
+  theme(plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")+
+  theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot",
+        legend.position="top")
   
 ```
 > visits and activities are generally going up over this period
@@ -107,11 +132,20 @@ activities %>%
   summarise(total_value = sum(value)) %>% 
   arrange(desc(total_value)) %>% 
   ggplot(aes(x = reorder(tourism_activity, total_value), y = total_value))+
-  geom_col()+
+  geom_col(fill = "#700e57")+
   coord_flip()+
   labs(title = "2019 Scotland Tourism Activites by Visits",
        y = "Total Visits (millions)",
-       x = "Tourism Activity")
+       x = "Tourism Activity")+
+  theme(plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")+
+  theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")
 ```
 # Visits over time
 ```{r}
@@ -125,10 +159,20 @@ activities %>%
   geom_point()+
   labs(title = "Top 6 Tourism Activity Visits over time",
        x = "\n Year",
-       y = "Visits (millions)\n ")
+       y = "Visits (millions)\n ")+
+  theme(plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")+
+  theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")
 ```
 
-> Visits on all but nights out at bars are going up over time so the increase expensiture we saw cant all be associated with inflation.
+> Visits on all but nights out at bars are going up over time so the increase expensiture we saw cant all be associated with inflation. Big drop (10m!) in Outdoor leaisure activities 2017-2018 despite was the UK’s warmest summer since 2006,
+the driest since 2003 and the sunniest since 1995.Was it too nice a summer? Look at non - summarised data would be good.
 
 
 #Q3 Demographics
@@ -146,11 +190,20 @@ demo %>%
   arrange(desc(value)) %>% 
   select(value, demo) %>% 
   ggplot(aes(x = reorder(demo, value), y = value))+
-  geom_col()+
+  geom_col(fill = "#700e57")+
   coord_flip()+
   labs(title = "2019 Tourist Expenditure Breakdown by Demographics",
        x = "Demographic",
-       y = "Expenditure (£millions)")
+       y = "Expenditure (£millions)")+
+  theme(plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")+
+  theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")
   
 
 ```
@@ -165,11 +218,20 @@ demo %>%
          date_code == 2019,
          demo != "All") %>% 
   ggplot(aes(x = reorder(demo, value), y = value))+
-  geom_col()+
+  geom_col(fill = "#700e57")+
   coord_flip()+
   labs(title = "2019 Tourist Visits Breakdown by Demographics",
        x = "Demographic",
-       y = "Visits (millions)")
+       y = "Visits (millions)")+
+  theme(plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")+
+  theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")
   
 
 ```
@@ -187,11 +249,17 @@ location %>%
   summarise(total_value = sum(value)) %>% 
   arrange(desc(total_value)) %>% 
   ggplot(aes(x = reorder(type_of_location_visited, total_value), y = total_value))+
-  geom_col()+
+  geom_col(fill = "#700e57")+
   #coord_flip()+
   labs(title = "2019 Scotland Tourism Locations by Visits",
        y = "Total Visits (millions)",
-       x = "Tourism Location")
+       x = "Tourism Location")+
+  theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")
 ```
 ```{r}
 location %>% 
@@ -218,7 +286,14 @@ location %>%
   geom_point()+
   labs(title = "2019 Scotland Tourism Locations by Expenditure",
        y = "Total Expenditure (millions)",
-       x = "Tourism Location")
+       x = "Year")+
+  scale_x_discrete(limits = (location$date_code))+
+  theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")
   
 location %>% 
   filter(type_of_location_visited != "All areas", 
@@ -230,8 +305,14 @@ location %>%
   geom_point()+
   labs(title = "2019 Scotland Tourism Locations by Visits",
        y = "Total Visits (millions)",
-       x = "Tourism Location")+
-  scale_x_discrete(limits = (location$date_code))
+       x = "Year")+
+  scale_x_discrete(limits = (location$date_code))+
+  theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")
 ```
 > Cities and large towns are by far the most popular destinations. Possibly this is skewed as the data includes a lot of going out for meals?
 
@@ -291,6 +372,33 @@ transport %>%
 #          date_code == 2019,
 #          breakdown_of_domestic_tourism == "Expenditure") %>% 
 #   summarise(total_val = sum(value))
+
+transport %>% 
+  filter(date_code == 2019,
+         breakdown_of_domestic_tourism == "Visits",
+         method_of_travel != "All") %>% 
+  mutate(method_of_travel = case_when(
+    method_of_travel %in% c("Car - own/friends/family",
+                            "Train",
+                            "Bus or Coach - Regular",
+                            "Walked",
+                            "Taxi") ~ method_of_travel,
+    TRUE ~ "Other"
+  )) %>% 
+  ggplot(aes(x = reorder(method_of_travel, value), y = value))+
+  geom_col(fill = "#700e57")+
+  coord_flip()+
+  labs(title = "2019 Transport Visits by Transport Type",
+       subtitle = "67% of all visits are by Car",
+       y = "Visits (millions)",
+       x = "Transport Type\n")+
+  theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")
+ 
 ```
 Transport change over time?
 
@@ -298,7 +406,17 @@ Transport change over time?
 transport %>% 
   filter(breakdown_of_domestic_tourism == "Visits", 
          method_of_travel != "All") %>% 
-  ggplot(aes(x = date_code, y = value, colour = method_of_travel))+
+  mutate(method_of_travel = case_when(
+    method_of_travel %in% c("Car - own/friends/family",
+                            "Train",
+                            "Bus or Coach - Regular",
+                            "Walked",
+                            "Taxi") ~ method_of_travel,
+    TRUE ~ "Other"
+  )) %>% 
+  group_by(method_of_travel, date_code) %>% 
+  summarise(total_value = sum(value)) %>% 
+  ggplot(aes(x = date_code, y = total_value, colour = method_of_travel))+
   geom_line()+
   geom_point()
 
@@ -435,8 +553,14 @@ accom %>%
   ggplot(aes(x = reorder(accommodation_type_and_occupancy, mean_occupancy), y = mean_occupancy))+
   geom_col(fill = "#700e57")+
   coord_flip()+
-  facet_wrap( ~ size_of_accommodation)+
-  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=3))
+  labs(title = "Accomodation Type and Size by Occupancy %",
+       x = "\n Mean Percentage Occupancy",
+       y = "Accomodation Type \n")+
+  theme_minimal()+
+  theme(plot.background = element_rect(colour = "#700e57", fill=NA, size=3))+
+  facet_wrap( ~ size_of_accommodation)
+  
+  
 ```
 
 ```{r}

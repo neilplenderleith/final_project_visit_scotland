@@ -8,6 +8,7 @@ output: html_notebook
 ```{r}
 library(tidyverse)
 library(janitor)
+library(scales)
 ```
 
 # Reading in Data
@@ -284,7 +285,7 @@ location %>%
   ggplot(aes(x = date_code, y = value))+
   geom_line(aes(colour = type_of_location_visited))+
   geom_point()+
-  labs(title = "2019 Scotland Tourism Locations by Expenditure",
+  labs(title = "Scotland Tourism Locations by Expenditure over Time",
        y = "Total Expenditure (millions)",
        x = "Year",
        color='Location Type')+
@@ -304,7 +305,7 @@ location %>%
   ggplot(aes(x = date_code, y = value))+
   geom_line(aes(colour = type_of_location_visited))+
   geom_point()+
-  labs(title = "2019 Scotland Tourism Locations by Visits",
+  labs(title = "Scotland Tourism Locations by Visits over Time",
        y = "Total Visits (millions)",
        x = "Year",
        color='Location Type')+
@@ -605,8 +606,17 @@ accom %>%
   group_by(accommodation_type_and_occupancy, location) %>% 
   summarise(mean_occupancy = mean(value)) %>% 
   ggplot(aes(x = reorder(accommodation_type_and_occupancy, mean_occupancy), y = mean_occupancy))+
-  geom_col()+
+  geom_col(fill = "#700e57")+
   coord_flip()+
+  labs(title = "Accommodation Type By Mean Occupancy and Location",
+       y = "Mean Occupancy",
+       x = "Accommodation Type")+
+    theme_minimal()+
+    theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot")+
   facet_wrap( ~ location)
 ```
 ```{r}
@@ -663,7 +673,17 @@ inter %>%
   summarise(total_visits = (sum(visits_000s)*1000)) %>% 
   ggplot(aes(x= year, y = total_visits, colour = country))+
   geom_line()+
-  geom_point()
+  geom_point()+
+  scale_y_continuous(labels = comma)+
+  scale_x_discrete(limits = (inter$year))+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  theme_minimal()+
+  theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
+        plot.background = element_rect(colour = "#700e57", fill=NA, size=3),
+        plot.caption = element_text(hjust = 0, face= "italic"), 
+        plot.title.position = "plot", #NEW parameter. Apply for subtitle too.
+        plot.caption.position =  "plot",
+        axis.text.x = element_text(angle = 45, hjust=1))
 
 inter %>% 
   filter(country %in% top_6_visitors) %>% 
@@ -753,3 +773,20 @@ Domestic tourism statistics by region and year. All figures come from the Great 
 Data has already been summarised - would have been better to have had the original data
 
 Used room occupancy rather than bed occupancy as it relates better to the other factors we are comparing it to eg a tent pitch.
+
+
+COVID going to wreck all this data
+
+US in 2010 - what did we start putting in their coffee?
+Do that to everyone else!
+
+2017 - was this effect of rough guide?
+
+The pre summarised data didnt always add up to the totals we would expect in each dataset - worth reviewing this
+
+
+Next:
+scrape twitter for tweets regarding visit scotland mentions
+better models with unsummarised data
+review data for accuracy - totals havent always added up
+better data collection!

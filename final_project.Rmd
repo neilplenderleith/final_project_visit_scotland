@@ -628,8 +628,8 @@ accom %>%
   geom_col(fill = "#700e57")+
   coord_flip()+
   labs(title = "Accomodation Type and Size by Occupancy %",
-       x = "\n Mean Percentage Occupancy",
-       y = "Accomodation Type \n")+
+       y = "\n Mean Percentage Occupancy",
+       x = "Accomodation Type \n")+
   theme_minimal()+
   theme(plot.background = element_rect(colour = "#700e57", fill=NA, size=3))+
   facet_wrap( ~ size_of_accommodation)
@@ -677,6 +677,9 @@ inter %>%
   scale_y_continuous(labels = comma)+
   scale_x_discrete(limits = (inter$year))+
   theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  labs(title = "International Visits by Country and Year",
+       x = "\n Year",
+       y = "Total Visits\n")+
   theme_minimal()+
   theme(panel.border = element_rect(colour = "#700e57", fill=NA, size=1),
         plot.background = element_rect(colour = "#700e57", fill=NA, size=3),

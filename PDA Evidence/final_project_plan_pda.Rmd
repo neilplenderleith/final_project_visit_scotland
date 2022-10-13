@@ -1,0 +1,119 @@
+---
+title: "Final project documentation - PDA"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    df_print: paged
+    css: ../../../styles.css
+    pdf_document: default
+  word_document:
+    toc: yes
+---
+# Neil Plenderleith, DR16
+
+## Context
+
+#### Business intelligence and data-driven decision making
+
+Visit Scotland can use my analysis in answer to their given business questions of the brief. This will allow them to better understand the market of tourists to Scotland. Namely:
+
+1. What kind of tourism activity generates the highest income for Scotland?  
+2. Which kind of activity generates the most visits to sites?  
+3. Is there a particular key demographic of visitors we should be focusing on?   
+4. What type of locations receive the most visits? What kinds of locations do people spend the most in?  
+5. Is there a particular method of travel our visitors arrive by?   
+6. When looking at regional tourism, what insights can we gain?   
+7. What type of accomodation is most popular? Is there a difference by location?  
+8. How have general tourism rates changed over time?  
+9. Is there any way to predict spending and visits for Visit Scotland?  
+
+
+#### Domain knowledge and the business context
+
+Working closely with private businesses, public agencies and local authorities, Visit Scotland works to ensure that our visitors experience the very best of Scotland and that the country makes the most of its outstanding tourism assets and realises its potential. My analysis fits within this goal by highlighting key areas to better understand the distribution and demographics of visits to Scotland. It also attempts to model this nehaviour to predict future events and makes recommendations on ideas to focus on in the future. 
+
+
+## Data
+
+#### Internal and external data sources
+
+Internal:  
+Regional Domestic Tourism figures, 2673 rows
+Scottish Accommodation Occupancy, 711 rows  
+Tourism Day Visits - Activities, 224 rows
+Tourism Day Visits - Demographics, 308 rows
+Tourism Day Visits - Location, 112 rows
+Tourism Day Visits - Transport, 236 rows
+
+External:  
+Scottish Regional Codes and Names Table, 33 rows. Sourced from Statistics.gov.uk
+International Tourism Visitors to Scotland, 32082 rows. Sourced from Scottish Tourism Observatory
+
+#### Types of data
+
+The data was made up of   
+continuous (numbers), in R: numeric, double, or integer  
+
+categorical, in R: character, factor, or logical (TRUE/FALSE)
+
+#### Data formats
+
+All data was in the form of .CSV files
+
+#### Data quality and bias
+
+The data had no missing values which was great but all of the Visit Scotland files had been pre-summarised into groups such as demographics etc. This made it much harder to "drill down" into the data. There seems to be no evidence of bias in the data but this would be clearer if the unsummarised data was published.
+
+
+## Ethics
+
+#### Ethical issues in data sourcing and extraction
+
+All of the data is open source and completely anonymous - I have no ethical issues with the datasets used.
+
+#### Ethical implications of business requirements
+
+Again as the data is open source I have no ethical issues. If this question refers to the business questions in the brief or the ethics of the business in question namely Visit Scotland the answer is the same with no ethical implications.
+
+## Analysis
+
+#### Stages in the data analysis process
+
+The General Outline Stages were as follows:
+
+1. Business questions and understanding  
+2. Transforming these into data questions
+3. Raw Data importing/sourcing
+4. Cleaning the data and joining
+5. Exploratory data analysis
+6. Insights and Predictions, referring back to business questions
+7. Modelling
+8. Arranging data analysis into presentation to answer the business questions
+9. Presenting
+
+
+#### Tools for data analysis
+
+I used R and R Studio for everything but the modelling, which was done in Python.
+
+#### Descriptive, diagnostic, predictive and prescriptive analysis
+
+Please report under which of the below categories your analysis falls **and why** (can be more than one) 
+
+::: {.emphasis}
+**Descriptive Analytics** 
+The datasets all contained historical data and my analysis used this data to better understand trends and changes and to attempt to model this historic data to predict future behaviour of tourism in Scotland.
+
+**Diagnostic Analytics** 
+My analysis included questions related to the question of "why did this happen" and highlighted several of these such as the peak tourism year in 2017 for Scotland.
+
+**Predictive Analytics** 
+My analysis made an attempt to analyze historical data to make predictions about future or otherwise unknown events by modelling this historical data using linear and lasso regression in python.
+
+**Prescriptive Analytics** 
+My analysis included recommendations for future action which included further analysis of the peak year of 2017, as well as another look at marketing for USA vistors and if this successful marketing could be targetted at other nations. 
+:::
+
+
+
